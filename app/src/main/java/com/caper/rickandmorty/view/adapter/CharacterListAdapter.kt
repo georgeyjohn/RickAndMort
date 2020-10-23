@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.caper.rickandmorty.R
@@ -13,7 +12,10 @@ import com.caper.rickandmorty.model.Character
 import com.caper.rickandmorty.utils.ImageLoader.loadImage
 
 
-class CharacterListAdapter(var characters: ArrayList<Character>) :
+class CharacterListAdapter(
+    var characters: ArrayList<Character>,
+    private val mListener: OnItemClickListener
+) :
     RecyclerView.Adapter<CharacterListAdapter.CharacterViewHolder>() {
 
     fun updateCharacter(newCharacters: List<Character>) {
@@ -23,7 +25,8 @@ class CharacterListAdapter(var characters: ArrayList<Character>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = CharacterViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_character, parent, false)
+        LayoutInflater.from(parent.context).inflate(R.layout.item_character, parent, false),
+        mListener
     )
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
@@ -32,7 +35,8 @@ class CharacterListAdapter(var characters: ArrayList<Character>) :
 
     override fun getItemCount() = characters.size
 
-    class CharacterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class CharacterViewHolder(view: View, private val mListener: OnItemClickListener) :
+        RecyclerView.ViewHolder(view) {
 
         private val imvCharacter = view.findViewById<ImageView>(R.id.imvCharacter)
         private val tvCharacterName = view.findViewById<TextView>(R.id.tvName)
@@ -48,8 +52,12 @@ class CharacterListAdapter(var characters: ArrayList<Character>) :
             tvSpecies.text = character.species
 
             clItemView.setOnClickListener {
-                
+                mListener.onItemClick(character)
             }
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(character: Character)
     }
 }

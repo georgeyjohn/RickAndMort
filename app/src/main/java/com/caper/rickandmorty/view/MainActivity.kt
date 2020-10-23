@@ -2,19 +2,21 @@ package com.caper.rickandmorty.view
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.caper.rickandmorty.R
+import com.caper.rickandmorty.model.Character
 import com.caper.rickandmorty.view.adapter.CharacterListAdapter
 import com.caper.rickandmorty.viewmodel.CharacterListViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CharacterListAdapter.OnItemClickListener {
 
     lateinit var vmCharacterList: CharacterListViewModel
-    private val charactersAdapter = CharacterListAdapter(arrayListOf())
+    private val charactersAdapter = CharacterListAdapter(arrayListOf(), this@MainActivity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,5 +57,16 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-
+    override fun onItemClick(character: Character) {
+        val alertDialog: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
+        alertDialog.setTitle("Character Name")
+        alertDialog.setMessage(character.location?.name)
+        alertDialog.setPositiveButton(
+            "Ok"
+        ) { _, _ ->
+        }
+        val alert: AlertDialog = alertDialog.create()
+        alert.setCanceledOnTouchOutside(false)
+        alert.show()
+    }
 }
